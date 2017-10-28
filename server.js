@@ -1,11 +1,12 @@
 const express = require('express');
 const app = express();
 const port = process.env.PORT || 3000;
+const questionTrackRoutes = require('./api/routes/question-track.routes');
 
-app.get('/', function(request, response){
-    response.send('Hello world!');
-});
+// Add the routing for the question track. 
+questionTrackRoutes(app);
 
+// Start the server
 app.listen(port, function(){
-    console.log('Listening on port 3000.');
+    console.log(`Listening on port ${port}.`);
 });
