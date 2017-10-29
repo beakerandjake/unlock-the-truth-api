@@ -14,7 +14,44 @@ class QuestionTrackController {
 
     // Submit an answer for the specified question. 
     answerQuestion(request, response) {
-        response.send('answer question');
+        const currentQuestion = mockData.currentQuestion;
+
+        console.log(request.body);
+
+        const questionId = 123;
+
+        // Make a dummy previous question object. 
+        const previousQuestion = {
+            id: questionId,
+            title: 'A great previous question',
+            body: 'Blah blah blah',
+            answer: 'Bob',
+            failedAttempts: 69,
+            answeredBy: 'Jim',
+            timeToAnswer: '6 hours',
+            number: currentQuestion.number
+        };
+
+        let newQuestion = null;
+
+        const locked = mockData.lockedQuestions[0];
+
+        if (locked) {
+            // Make a dummy new question object. 
+            newQuestion = {
+                id: locked.id,
+                title: 'Sint dolor aliqua cillum voluptate culpa nostrud consectetur anim.',
+                body: 'Who is cool?',
+                type: 'text',
+                number: locked.number
+            };
+        }
+
+        response.json({
+            correct: true,
+            nextQuestion: newQuestion,
+            previousQuestion: previousQuestion
+        });
     }
 }
 

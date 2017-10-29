@@ -4,8 +4,8 @@
   "description": "An api for solving mysteries",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon server.js"
+    "start": "nodemon server.js",
+    "lint": "eslint 'api/**/*.js' || exit 0"
   },
   "repository": {
     "type": "git",
@@ -18,10 +18,12 @@
   },
   "homepage": "https://github.com/beakerandjake/unlock-the-truth-api#readme",
   "dependencies": {
+    "body-parser": "^1.18.2",
     "cors": "^2.8.4",
     "express": "^4.16.2"
   },
   "devDependencies": {
+    "eslint": "^4.10.0",
     "nodemon": "^1.12.1"
   }
 }
