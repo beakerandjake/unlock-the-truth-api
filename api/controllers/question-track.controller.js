@@ -14,7 +14,11 @@ class QuestionTrackController {
 
     // Submit an answer for the specified question. 
     answerQuestion(request, response) {
-        const currentQuestion = mockQuestions.currentQuestion;
+        const currentQuestion = mockData.currentQuestion;
+
+        console.log(request.body);
+
+        const questionId = 123;
 
         // Make a dummy previous question object. 
         const previousQuestion = {
@@ -30,7 +34,7 @@ class QuestionTrackController {
 
         let newQuestion = null;
 
-        const locked = mockQuestions.lockedQuestions[0];
+        const locked = mockData.lockedQuestions[0];
 
         if (locked) {
             // Make a dummy new question object. 
