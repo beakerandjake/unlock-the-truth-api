@@ -26,6 +26,11 @@ const QuestionSchema = Schema({
     body: {
         type: String,
         required: true
+    },
+    // What time did the user unlock this question? 
+    timeUnlocked: {
+        type: Date,
+        required: true
     }
 });
 
