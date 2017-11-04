@@ -46,3 +46,36 @@ exports.answerQuestion = (request, response) => {
         previousQuestion: previousQuestion
     });
 };
+
+// Create a new question and save it to the database. 
+exports.createQuestion = (request, response) => {
+
+    // Generate the new question based on the provided body. 
+    const toSave = new Question({
+        status: 'Locked',
+        title: request.body.title,
+        body: request.body.body,
+        type: request.body.type || 'text',
+        answer: request.body.answer
+    });
+
+    // Get the highest question number from the database. 
+    Question
+        .findOne({}, 'number')
+        .sort({
+            number: 'desc'
+        })
+        .limit(1)
+        // Now that we have highest number, save the new question to the database.
+        .then(result => {
+            const nextQuestionNumber = !result ? 1 : result.number;
+            toSave.number = nextQuestionNumber;
+            return toSave.save();
+        })
+        .then(result => {
+            response.json(result);
+        })
+        .catch(error => {
+            throw error;
+        });
+};
