@@ -12,8 +12,6 @@ const envConfig = require('dotenv').config();
 const questionTrackRoutes = require('./api/routes/question-track.routes');
 const debugRoutes = require('./api/routes/debug.routes');
 
-// 
-[nodemon] restarting due to changes...Create express app.
 const app = express();
 const port = process.env.PORT || 3000;
 
