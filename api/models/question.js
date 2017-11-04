@@ -29,13 +29,11 @@ const QuestionSchema = Schema({
     },
     // What time did the user unlock this question? 
     timeUnlocked: {
-        type: Date,
-        required: true
+        type: Date
     },
     // What time did the user successfully answer this question? 
     timeAnswered: {
-        type: Date,
-        required: true
+        type: Date
     },
     // The number of times the user tried to answer this question
     failedAttempts: {
