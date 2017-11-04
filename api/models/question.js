@@ -56,4 +56,11 @@ const QuestionSchema = Schema({
     }
 });
 
+// Helper method which returns all questions with a 'locked' status. 
+QuestionSchema.statics.lockedQuestions = function () {
+    return this.find({
+        status: 'locked'
+    }, 'title number');
+};
+
 module.exports = mongoose.model('Question', QuestionSchema);
