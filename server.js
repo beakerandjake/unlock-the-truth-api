@@ -27,7 +27,7 @@ mongoose.Promise = global.Promise;
 mongoose.connect('mongodb://ds243055.mlab.com:43055/unlock-the-truth', {
     useMongoClient: true,
     user: process.env.DB_USER,
-    pass: process.env.DB_PASSWORD,
+    pass: process.env.DB_PASSWORD
 });
 
 const db = mongoose.connection;
