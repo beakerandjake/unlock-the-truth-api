@@ -30,7 +30,9 @@ mongoose.connect('mongodb://ds243055.mlab.com:43055/unlock-the-truth', {
     user: process.env.DB_USER,
     pass: process.env.DB_PASSWORD
 });
+
 const db = mongoose.connection;
+
 db.on('error', err => {
     console.error('Error connecting to database', err);
 });
