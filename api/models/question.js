@@ -43,7 +43,14 @@ const QuestionSchema = Schema({
         required: true,
         default: 0,
         min: 0
-    }
+    },
+    // What type of question is this? TODO: if this becomes more complex need to rethink this. 
+    type: {
+        type: String,
+        required: true,
+        enum: ['text', 'manual'],
+        default: 'text'
+    },
 
 });
 
