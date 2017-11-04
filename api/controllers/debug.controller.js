@@ -21,7 +21,7 @@ exports.postQuestion = (request, response) => {
         })
         .limit(1)
         .then(result => {
-            const nextQuestionNumber = result.number + 1;
+            const nextQuestionNumber = !result ? 1 : result.number;
             toSave.number = nextQuestionNumber;
             return toSave.save();
         })
