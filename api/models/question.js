@@ -63,4 +63,18 @@ QuestionSchema.statics.lockedQuestions = function () {
     }, 'title number');
 };
 
+// Helper method which returns all questions with a 'current' status. 
+QuestionSchema.statics.currentQuestion = function () {
+    return this.findOne({
+        status: 'current'
+    }, 'title body type number timeUnlocked');
+};
+
+// Helper method which returns all questions with an 'unlocked' status. 
+QuestionSchema.statics.unlockedQuestions = function () {
+    return this.findOne({
+        status: 'unlocked'
+    }, 'title body answer failedAttempts timeUnlocked timeAnswered number');
+};
+
 module.exports = mongoose.model('Question', QuestionSchema);
