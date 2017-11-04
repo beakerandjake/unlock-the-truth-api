@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const errorHandler = require('api-error-handler');
 const notFoundErrorHandler = require('./api/middleware/not-found.middleware');
+const envConfig = require('dotenv').config();
 
 // API Routes. 
 const questionTrackRoutes = require('./api/routes/question-track.routes');
@@ -24,12 +25,14 @@ app.use(cors());
 // Add JSON body parser middleware. 
 app.use(bodyParser.json());
 
-mongoose.connect('mongodb://localhost:27017', {
-    useMongoClient: true
+mongoose.connect('mongodb://ds243055.mlab.com:43055/unlock-the-truth', {
+    useMongoClient: true,
+    user: process.env.DB_USER,
+    pass: process.env.DB_PASSWORD
 });
 const db = mongoose.connection;
-db.on('error', () => {
-    console.error('Error connecting to database');
+db.on('error', err => {
+    console.error('Error connecting to database', err);
 });
 db.on('open', () => {
     console.log('connected');
@@ -39,7 +42,7 @@ db.on('open', () => {
 questionTrackRoutes(app);
 
 // Add 404 error handler. 
-app.use(notFound);
+app.use(notFoundErrorHandler);
 
 // Add error handler which returns JSON.
 app.use(errorHandler());
