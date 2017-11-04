@@ -14,8 +14,8 @@ const QuestionSchema = Schema({
     status: {
         type: String,
         required: true,
-        enum: ['Locked', 'Unlocked', 'Current'],
-        default: 'Locked'
+        enum: ['locked', 'unlocked', 'current'],
+        default: 'locked'
     },
     // The title of the question.
     title: {
