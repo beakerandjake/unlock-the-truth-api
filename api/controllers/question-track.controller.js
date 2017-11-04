@@ -5,12 +5,13 @@ const _ = require('lodash');
 // Returns all of the questions in the question track to the user. 
 exports.getQuestions = (request, response) => {
 
-    const lockedQuestions = Question
-        .find({
-            status: 'locked'
-        }, 'title number')
-        .exec()
+    Promise.all([
+            Question.unlockedQuestions(),
+            Question.currentQuestion(),
+            Question.lockedQuestions(),
+        ])
         .then(result => {
+            console.log('got result:', result);
             response.json(result);
         })
         .catch(error => {
