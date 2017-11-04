@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/beakerandjake/unlock-the-truth-api#readme",
   "dependencies": {
+    "api-error-handler": "^1.0.0",
     "body-parser": "^1.18.2",
     "cors": "^2.8.4",
     "express": "^4.16.2",
