@@ -40,7 +40,7 @@ db.on('open', () => {
 });
 
 // Add the routing for the question track. 
-questionTrackRoutes(app);
+app.use('/questions', questionTrackRoutes);
 
 // Add 404 error handler. 
 app.use(notFoundErrorHandler);

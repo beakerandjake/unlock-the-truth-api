@@ -1,11 +1,11 @@
-const QuestionController = require('../controllers/question-track.controller');
+const express = require('express');
+const router = express.Router();
+const questionController = require('../controllers/question-track.controller');
 
-module.exports = function (app) {
-    const questionController = new QuestionController();
+// GET all questions
+router.get('/', questionController.getQuestions);
 
-    app.route('/questions')
-        .get(questionController.getQuestions);
+// POST answer for question
+router.post('/:questionId', questionController.answerQuestion);
 
-    app.route('/questions/:questionId')
-        .post(questionController.answerQuestion);
-};
+module.exports = router;
