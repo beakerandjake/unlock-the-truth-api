@@ -36,6 +36,13 @@ const QuestionSchema = Schema({
     timeAnswered: {
         type: Date,
         required: true
+    },
+    // The number of times the user tried to answer this question
+    failedAttempts: {
+        type: Number,
+        required: true,
+        default: 0,
+        min: 0
     }
 
 });
