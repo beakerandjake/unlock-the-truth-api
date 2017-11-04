@@ -4,10 +4,26 @@ const Question = require('../models/question');
 // Create a new question and save it to the database. 
 exports.postQuestion = (request, response) => {
 
+    // Generate the new question based on the provided body. 
+    const toSave = new Question({
+        status: 'Locked',
+        title: request.body.title,
+        body: request.body.body,
+        type: request.body.type || 'text',
+        answer: request.body.answer
+    });
+
+    // Get the highest question number from the database. 
     Question
-        .find({})
+        .findOne({}, 'number')
         .sort({
             number: 'desc'
+        })
+        .limit(1)
+        .then(result => {
+            const nextQuestionNumber = result.number + 1;
+            toSave.number = nextQuestionNumber;
+            return toSave.save();
         })
         .then(result => {
             response.json(result);
@@ -15,23 +31,4 @@ exports.postQuestion = (request, response) => {
         .catch(error => {
             throw error;
         });
-
-    // const toSave = new Question({
-    //     number: 3, // TODO
-    //     status: 'Locked',
-    //     title: request.body.title,
-    //     body: request.body.body,
-    //     type: request.body.type || 'text',
-    //     answer: request.body.answer
-    // });
-
-    // toSave.save(function (err, result) {
-    //     console.log('result', result);
-
-    //     if (err) {
-    //         throw err;
-    //     } else {
-    //         response.json('Inserted question:', result._id);;
-    //     }
-    // });
 };
