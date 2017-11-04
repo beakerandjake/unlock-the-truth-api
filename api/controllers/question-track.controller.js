@@ -1,58 +1,48 @@
 const mockData = require('./mock-data.json');
 
-// Controller with methods relating to the question track.
+// Returns all of the questions in the question track to the user. 
+exports.getQuestions = (request, response) => {
+    response.json(mockData);
+};
 
-class QuestionTrackController {
-    constructor() {
+// Submit an answer for the specified question. 
+exports.answerQuestion = (request, response) => {
+    const currentQuestion = mockData.currentQuestion;
 
-    }
+    console.log(request.body);
 
-    // Returns all of the questions in the question track to the user. 
-    getQuestions(request, response) {
-        response.json(mockData);
-    }
+    const questionId = 123;
 
-    // Submit an answer for the specified question. 
-    answerQuestion(request, response) {
-        const currentQuestion = mockData.currentQuestion;
+    // Make a dummy previous question object. 
+    const previousQuestion = {
+        id: questionId,
+        title: 'A great previous question',
+        body: 'Blah blah blah',
+        answer: 'Bob',
+        failedAttempts: 69,
+        answeredBy: 'Jim',
+        timeToAnswer: '6 hours',
+        number: currentQuestion.number
+    };
 
-        console.log(request.body);
+    let newQuestion = null;
 
-        const questionId = 123;
+    const locked = mockData.lockedQuestions[0];
 
-        // Make a dummy previous question object. 
-        const previousQuestion = {
-            id: questionId,
-            title: 'A great previous question',
-            body: 'Blah blah blah',
-            answer: 'Bob',
-            failedAttempts: 69,
-            answeredBy: 'Jim',
-            timeToAnswer: '6 hours',
-            number: currentQuestion.number
+    if (locked) {
+        // Make a dummy new question object. 
+        newQuestion = {
+            id: locked.id,
+            title: 'Sint dolor aliqua cillum voluptate culpa nostrud consectetur anim.',
+            body: 'Who is cool?',
+            type: 'text',
+            number: locked.number
         };
-
-        let newQuestion = null;
-
-        const locked = mockData.lockedQuestions[0];
-
-        if (locked) {
-            // Make a dummy new question object. 
-            newQuestion = {
-                id: locked.id,
-                title: 'Sint dolor aliqua cillum voluptate culpa nostrud consectetur anim.',
-                body: 'Who is cool?',
-                type: 'text',
-                number: locked.number
-            };
-        }
-
-        response.json({
-            correct: true,
-            nextQuestion: newQuestion,
-            previousQuestion: previousQuestion
-        });
     }
-}
 
-module.exports = QuestionTrackController;
+    response.json({
+        correct: true,
+        nextQuestion: newQuestion,
+        previousQuestion: previousQuestion
+    });
+};
