@@ -51,7 +51,11 @@ const QuestionSchema = Schema({
         enum: ['text', 'manual'],
         default: 'text'
     },
-
+    // The questions answer. TODO: if this becomes more complex, need to rethink how this works. 
+    answer: {
+        type: String,
+        required: true
+    }
 });
 
 module.exports = mongoose.model('Question', QuestionSchema);
