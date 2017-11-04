@@ -1,4 +1,6 @@
+const Question = require('../models/question');
 const mockData = require('./mock-data.json');
+const _ = require('lodash');
 
 // Returns all of the questions in the question track to the user. 
 exports.getQuestions = (request, response) => {
@@ -68,8 +70,8 @@ exports.createQuestion = (request, response) => {
         .limit(1)
         // Now that we have highest number, save the new question to the database.
         .then(result => {
-            const nextQuestionNumber = !result ? 1 : result.number;
-            toSave.number = nextQuestionNumber;
+            const nextQuestionNumber = _.get(result, 'number', 0);
+            toSave.number = nextQuestionNumber + 1;
             return toSave.save();
         })
         .then(result => {
