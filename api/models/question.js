@@ -21,6 +21,11 @@ const QuestionSchema = Schema({
     title: {
         type: String,
         required: true
+    },
+    // The main content of the question displayed to the user. 
+    body: {
+        type: String,
+        required: true
     }
 });
 
