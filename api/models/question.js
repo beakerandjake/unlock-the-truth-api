@@ -17,6 +17,11 @@ const QuestionSchema = Schema({
         enum: ['Locked', 'Unlocked', 'Current'],
         default: 'Locked'
     },
+    // The title of the question.
+    title: {
+        type: String,
+        required: true
+    }
 });
 
 module.exports = mongoose.model('Question', QuestionSchema);
