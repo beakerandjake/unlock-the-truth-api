@@ -9,44 +9,45 @@ exports.getQuestions = (request, response) => {
 
 // Submit an answer for the specified question. 
 exports.answerQuestion = (request, response) => {
-    const currentQuestion = mockData.currentQuestion;
+    response.send('NOT IMPLEMENTED');
+    // const currentQuestion = mockData.currentQuestion;
 
-    console.log(request.body);
+    // console.log(request.body);
 
-    const questionId = 123;
+    // const questionId = 123;
 
-    // Make a dummy previous question object. 
-    const previousQuestion = {
-        id: questionId,
-        title: 'A great previous question',
-        body: 'Blah blah blah',
-        answer: 'Bob',
-        failedAttempts: 69,
-        answeredBy: 'Jim',
-        timeToAnswer: '6 hours',
-        number: currentQuestion.number
-    };
+    // // Make a dummy previous question object. 
+    // const previousQuestion = {
+    //     id: questionId,
+    //     title: 'A great previous question',
+    //     body: 'Blah blah blah',
+    //     answer: 'Bob',
+    //     failedAttempts: 69,
+    //     answeredBy: 'Jim',
+    //     timeToAnswer: '6 hours',
+    //     number: currentQuestion.number
+    // };
 
-    let newQuestion = null;
+    // let newQuestion = null;
 
-    const locked = mockData.lockedQuestions[0];
+    // const locked = mockData.lockedQuestions[0];
 
-    if (locked) {
-        // Make a dummy new question object. 
-        newQuestion = {
-            id: locked.id,
-            title: 'Sint dolor aliqua cillum voluptate culpa nostrud consectetur anim.',
-            body: 'Who is cool?',
-            type: 'text',
-            number: locked.number
-        };
-    }
+    // if (locked) {
+    //     // Make a dummy new question object. 
+    //     newQuestion = {
+    //         id: locked.id,
+    //         title: 'Sint dolor aliqua cillum voluptate culpa nostrud consectetur anim.',
+    //         body: 'Who is cool?',
+    //         type: 'text',
+    //         number: locked.number
+    //     };
+    // }
 
-    response.json({
-        correct: true,
-        nextQuestion: newQuestion,
-        previousQuestion: previousQuestion
-    });
+    // response.json({
+    //     correct: true,
+    //     nextQuestion: newQuestion,
+    //     previousQuestion: previousQuestion
+    // });
 };
 
 // Create a new question and save it to the database. 
