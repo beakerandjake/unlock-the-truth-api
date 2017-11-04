@@ -11,7 +11,6 @@ const envConfig = require('dotenv').config();
 // API Routes. 
 const questionTrackRoutes = require('./api/routes/question-track.routes');
 
-// Create express app.
 const app = express();
 const port = process.env.PORT || 3000;
 
