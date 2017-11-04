@@ -7,3 +7,5 @@ router.get('/', questionController.getQuestions);
 
 // POST answer for question
 router.post('/:questionId', questionController.answerQuestion);
+
+module.exports = router;
