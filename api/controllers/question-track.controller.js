@@ -50,11 +50,11 @@ exports.answerQuestion = (request, response) => {
 };
 
 // Create a new question and save it to the database. 
-exports.createQuestion = (request, response) => {
+exports.createQuestion = (request, response, next) => {
 
     // Generate the new question based on the provided body. 
     const toSave = new Question({
-        status: 'Locked',
+        status: 'locked',
         title: request.body.title,
         body: request.body.body,
         type: request.body.type || 'text',
@@ -78,6 +78,6 @@ exports.createQuestion = (request, response) => {
             response.json(result);
         })
         .catch(error => {
-            throw error;
+            next(error);
         });
 };
