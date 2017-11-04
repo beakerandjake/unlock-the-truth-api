@@ -31,7 +31,13 @@ const QuestionSchema = Schema({
     timeUnlocked: {
         type: Date,
         required: true
+    },
+    // What time did the user successfully answer this question? 
+    timeAnswered: {
+        type: Date,
+        required: true
     }
+
 });
 
 module.exports = mongoose.model('Question', QuestionSchema);
