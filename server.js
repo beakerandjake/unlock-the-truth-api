@@ -10,8 +10,6 @@ const envConfig = require('dotenv').config();
 
 // API Routes. 
 const questionTrackRoutes = require('./api/routes/question-track.routes');
-const testRoutes = require('./api/routes/test.routes');
-
 
 // Create express app.
 const app = express();
@@ -43,7 +41,6 @@ db.on('open', () => {
 
 // Add the routing for the question track. 
 questionTrackRoutes(app);
-testRoutes(app);
 
 // Add 404 error handler. 
 app.use(notFoundErrorHandler);
