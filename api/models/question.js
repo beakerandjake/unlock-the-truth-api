@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const QuestionSchema = Schema({
+    // What number is this question in the question-track?
     number: {
         type: Number,
         required: true,
@@ -9,6 +10,7 @@ const QuestionSchema = Schema({
         set: v => Math.round(v),
         min: 1
     },
+    // Tracks the state of the question
     status: {
         type: String,
         required: true,
