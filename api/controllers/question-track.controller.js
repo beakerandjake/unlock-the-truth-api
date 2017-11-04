@@ -4,7 +4,24 @@ const _ = require('lodash');
 
 // Returns all of the questions in the question track to the user. 
 exports.getQuestions = (request, response) => {
-    response.json(mockData);
+
+    const lockedQuestions = Question
+        .find({
+            status: 'locked'
+        }, 'title number')
+        .exec()
+        .then(result => {
+            response.json(result);
+        })
+        .catch(error => {
+            next(error);
+        });
+
+
+    // Get unlocked questions
+    // Get current question
+    // Get locked questions. 
+    //response.json(mockData);
 };
 
 // Submit an answer for the specified question. 
