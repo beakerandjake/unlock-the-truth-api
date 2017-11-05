@@ -3,50 +3,65 @@ const mockData = require('./mock-data.json');
 const _ = require('lodash');
 
 // Returns all of the questions in the question track to the user. 
-exports.getQuestions = (request, response) => {
-    response.json(mockData);
+exports.getQuestions = (request, response, next) => {
+    Promise.all([
+            Question.unlockedQuestions(),
+            Question.currentQuestion(),
+            Question.lockedQuestions(),
+        ])
+        .then(result => {
+            response.json({
+                unlockedQuestions: result[0] || [],
+                currentQuestion: result[1] || {},
+                lockedQuestions: result[2] || []
+            });
+        })
+        .catch(error => {
+            next(error);
+        });
 };
 
 // Submit an answer for the specified question. 
 exports.answerQuestion = (request, response) => {
-    const currentQuestion = mockData.currentQuestion;
+    response.send('NOT IMPLEMENTED');
+    // const currentQuestion = mockData.currentQuestion;
 
-    console.log(request.body);
+    // console.log(request.body);
 
-    const questionId = 123;
+    // const questionId = 123;
 
-    // Make a dummy previous question object. 
-    const previousQuestion = {
-        id: questionId,
-        title: 'A great previous question',
-        body: 'Blah blah blah',
-        answer: 'Bob',
-        failedAttempts: 69,
-        answeredBy: 'Jim',
-        timeToAnswer: '6 hours',
-        number: currentQuestion.number
-    };
+    // // Make a dummy previous question object. 
+    // const previousQuestion = {
+    //     id: questionId,
+    //     title: 'A great previous question',
+    //     body: 'Blah blah blah',
+    //     answer: 'Bob',
+    //     failedAttempts: 69,
+    //     answeredBy: 'Jim',
+    //     timeToAnswer: '6 hours',
+    //     number: currentQuestion.number
+    // };
 
-    let newQuestion = null;
+    // let newQuestion = null;
 
-    const locked = mockData.lockedQuestions[0];
+    // const locked = mockData.lockedQuestions[0];
 
-    if (locked) {
-        // Make a dummy new question object. 
-        newQuestion = {
-            id: locked.id,
-            title: 'Sint dolor aliqua cillum voluptate culpa nostrud consectetur anim.',
-            body: 'Who is cool?',
-            type: 'text',
-            number: locked.number
-        };
-    }
+    // if (locked) {
+    //     // Make a dummy new question object. 
+    //     newQuestion = {
+    //         id: locked.id,
+    //         title: 'Sint dolor aliqua cillum voluptate culpa nostrud consectetur anim.',
+    //         body: 'Who is cool?',
+    //         type: 'text',
+    //         number: locked.number
+    //     };
+    // }
 
-    response.json({
-        correct: true,
-        nextQuestion: newQuestion,
-        previousQuestion: previousQuestion
-    });
+    // response.json({
+    //     correct: true,
+    //     nextQuestion: newQuestion,
+    //     previousQuestion: previousQuestion
+    // });
 };
 
 // Create a new question and save it to the database. 
@@ -72,6 +87,13 @@ exports.createQuestion = (request, response, next) => {
         .then(result => {
             const nextQuestionNumber = _.get(result, 'number', 0);
             toSave.number = nextQuestionNumber + 1;
+
+            // Always make first question unlocked
+            if (toSave.number === 1) {
+                toSave.status = 'current';
+                toSave.timeUnlocked = new Date().toISOString();
+            }
+
             return toSave.save();
         })
         .then(result => {

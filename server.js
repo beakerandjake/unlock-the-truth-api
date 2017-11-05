@@ -23,6 +23,7 @@ app.use(cors());
 // Add JSON body parser middleware. 
 app.use(bodyParser.json());
 
+mongoose.Promise = global.Promise;
 mongoose.connect('mongodb://ds243055.mlab.com:43055/unlock-the-truth', {
     useMongoClient: true,
     user: process.env.DB_USER,
