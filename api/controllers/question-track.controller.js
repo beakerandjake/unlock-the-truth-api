@@ -23,7 +23,18 @@ exports.getQuestions = (request, response, next) => {
 
 // Submit an answer for the specified question. 
 exports.answerQuestion = (request, response) => {
-    response.send('NOT IMPLEMENTED');
+    const questionId = request.params.questionId;
+    const answer = request.body.answer;
+
+    console.log('questionId:', questionId,'answer:', answer);
+
+    response.json({
+        params: request.params,
+        body: request.body
+    });
+
+
+    //response.send('NOT IMPLEMENTED');
     // const currentQuestion = mockData.currentQuestion;
 
     // console.log(request.body);
