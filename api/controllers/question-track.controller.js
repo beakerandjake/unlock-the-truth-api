@@ -1,6 +1,5 @@
 const Question = require('../models/question');
 const mockData = require('./mock-data.json');
-const moment = require('moment');
 const _ = require('lodash');
 
 // Returns all of the questions in the question track to the user. 
