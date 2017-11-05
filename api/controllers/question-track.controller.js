@@ -4,7 +4,6 @@ const _ = require('lodash');
 
 // Returns all of the questions in the question track to the user. 
 exports.getQuestions = (request, response, next) => {
-
     Promise.all([
             Question.unlockedQuestions(),
             Question.currentQuestion(),
