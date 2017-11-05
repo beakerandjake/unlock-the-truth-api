@@ -1,5 +1,6 @@
 const Question = require('../models/question');
 const mockData = require('./mock-data.json');
+const moment = require('moment');
 const _ = require('lodash');
 
 // Returns all of the questions in the question track to the user. 
@@ -92,7 +93,7 @@ exports.createQuestion = (request, response, next) => {
             // Always make first question unlocked
             if (toSave.number === 1) {
                 toSave.status = 'current';
-                toSave.timeUnlocked = Date.now()
+                toSave.timeUnlocked = new Date().toISOString();
             }
 
             return toSave.save();
