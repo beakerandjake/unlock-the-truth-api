@@ -72,7 +72,7 @@ QuestionSchema.statics.currentQuestion = function () {
 
 // Helper method which returns all questions with an 'unlocked' status. 
 QuestionSchema.statics.unlockedQuestions = function () {
-    return this.findOne({
+    return this.find({
         status: 'unlocked'
     }, 'title body answer failedAttempts timeUnlocked timeAnswered number');
 };
