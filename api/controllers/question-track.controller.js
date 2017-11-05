@@ -3,7 +3,7 @@ const mockData = require('./mock-data.json');
 const _ = require('lodash');
 
 // Returns all of the questions in the question track to the user. 
-exports.getQuestions = (request, response) => {
+exports.getQuestions = (request, response, next) => {
 
     Promise.all([
             Question.unlockedQuestions(),
@@ -11,18 +11,15 @@ exports.getQuestions = (request, response) => {
             Question.lockedQuestions(),
         ])
         .then(result => {
-            console.log('got result:', result);
-            response.json(result);
+            response.json({
+                unlockedQuestions: result[0] || [],
+                currentQuestion: result[1] || {},
+                lockedQuestions: result[2] || []
+            });
         })
         .catch(error => {
             next(error);
         });
-
-
-    // Get unlocked questions
-    // Get current question
-    // Get locked questions. 
-    //response.json(mockData);
 };
 
 // Submit an answer for the specified question. 
@@ -91,6 +88,13 @@ exports.createQuestion = (request, response, next) => {
         .then(result => {
             const nextQuestionNumber = _.get(result, 'number', 0);
             toSave.number = nextQuestionNumber + 1;
+
+            // Always make first question unlocked
+            if (toSave.number === 1) {
+                toSave.status = 'current';
+                toSave.timeUnlocked = Date.now()
+            }
+
             return toSave.save();
         })
         .then(result => {
