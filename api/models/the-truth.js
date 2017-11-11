@@ -6,11 +6,12 @@ const TheTruthSchema = Schema({
     body: {
         type: String,
         required: true
-    },
-    // What time did the user unlock this question? 
-    timeUnlocked: {
-        type: Date
     }
 });
+
+// Helper method which returns the truth to the user. 
+TheTruthSchema.statics.getTheTruth = function() {
+    return this.findOne({}, 'body');
+}
 
 module.exports = mongoose.model('TheTruth', TheTruthSchema);
