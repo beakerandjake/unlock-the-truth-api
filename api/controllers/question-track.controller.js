@@ -20,7 +20,7 @@ exports.getQuestions = (request, response, next) => {
         });
 };
 
-// Submit an answer for the specified question. 
+// Submit an answer for the current question. 
 exports.answerCurrentQuestion = (request, response, next) => {
     // Grab the params we need. 
     const userAnswer = request.body.answer;
@@ -43,7 +43,6 @@ exports.answerCurrentQuestion = (request, response, next) => {
 
     // Throws bad request if current question does not exist. 
     function ensureCurrentQuestionExists(question) {
-        console.log('ensure current exists');
         if (!question) {
             // No current question? Bad request. 
             throw {
@@ -57,7 +56,6 @@ exports.answerCurrentQuestion = (request, response, next) => {
 
     // See if the users answer matches the DB answer and handle accordingly. 
     function checkAnswer(question) {
-        console.log('check answer');
         const lhs = _.trim(userAnswer).toLowerCase();
         const rhs = _.trim(question.answer).toLowerCase();
 
@@ -145,7 +143,45 @@ exports.answerCurrentQuestion = (request, response, next) => {
 
 // Create a new question and save it to the database. 
 exports.createQuestion = (request, response, next) => {
+    // Generate the new question based on the provided body. 
+    const toSave = new Question({
+        status: 'locked',
+        title: request.body.title,
+        body: request.body.body,
+        type: request.body.type || 'text',
+        answer: request.body.answer
+    });
 
+    // Get the highest question number from the database. 
+    Question
+        .findOne({}, 'number')
+        .sort({
+            number: 'desc'
+        })
+        .limit(1)
+        // Now that we have highest number, save the new question to the database.
+        .then(result => {
+            const nextQuestionNumber = _.get(result, 'number', 0);
+            toSave.number = nextQuestionNumber + 1;
+
+            // Always make first question unlocked
+            if (toSave.number === 1) {
+                toSave.status = 'current';
+                toSave.timeUnlocked = new Date().toISOString();
+            }
+
+            return toSave.save();
+        })
+        .then(result => {
+            response.json(result);
+        })
+        .catch(error => {
+            next(error);
+        });
+};
+
+// Delete all questions and add 11 placeholder ones. 
+exports.reset = (request, response, next) => {
     const questions = [new Question({
         status: 'current',
         title: '1',
@@ -184,39 +220,4 @@ exports.createQuestion = (request, response, next) => {
         .catch(error => {
             next(error);
         });
-    // // Generate the new question based on the provided body. 
-    // const toSave = new Question({
-    //     status: 'locked',
-    //     title: request.body.title,
-    //     body: request.body.body,
-    //     type: request.body.type || 'text',
-    //     answer: request.body.answer
-    // });
-
-    // // Get the highest question number from the database. 
-    // Question
-    //     .findOne({}, 'number')
-    //     .sort({
-    //         number: 'desc'
-    //     })
-    //     .limit(1)
-    //     // Now that we have highest number, save the new question to the database.
-    //     .then(result => {
-    //         const nextQuestionNumber = _.get(result, 'number', 0);
-    //         toSave.number = nextQuestionNumber + 1;
-
-    //         // Always make first question unlocked
-    //         if (toSave.number === 1) {
-    //             toSave.status = 'current';
-    //             toSave.timeUnlocked = new Date().toISOString();
-    //         }
-
-    //         return toSave.save();
-    //     })
-    //     .then(result => {
-    //         response.json(result);
-    //     })
-    //     .catch(error => {
-    //         next(error);
-    //     });
 };
