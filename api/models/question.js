@@ -63,7 +63,7 @@ const QuestionSchema = Schema({
 });
 
 // Helper method which returns all questions with a 'locked' status. 
-QuestionSchema.statics.lockedQuestionsVm = function () {
+QuestionSchema.statics.getLockedQuestionsVm = function () {
     return this.find({
             status: 'locked'
         }, 'title number')
@@ -73,14 +73,14 @@ QuestionSchema.statics.lockedQuestionsVm = function () {
 };
 
 // Helper method which returns all questions with a 'current' status. 
-QuestionSchema.statics.currentQuestionVm = function () {
+QuestionSchema.statics.getCurrentQuestionVm = function () {
     return this.findOne({
         status: 'current'
     }, projections.currentQuestion);
 };
 
 // Helper method which returns all questions with an 'unlocked' status. 
-QuestionSchema.statics.unlockedQuestionsVm = function () {
+QuestionSchema.statics.getUnlockedQuestionsVm = function () {
     return this.find({
             status: 'unlocked'
         }, projections.unlockedQuestion)
@@ -90,14 +90,14 @@ QuestionSchema.statics.unlockedQuestionsVm = function () {
 };
 
 // Helper method which returns the current question (if any). 
-QuestionSchema.statics.currentQuestionAndAnswer = function () {
+QuestionSchema.statics.getCurrentQuestionAndAnswer = function () {
     return this.findOne({
         status: 'current'
     }, 'answer failedAttempts');
 }
 
 // Helper method which returns the last unlocked question (if any).
-QuestionSchema.statics.lastUnlockedQuestionVm = function () {
+QuestionSchema.statics.getLastUnlockedQuestionVm = function () {
     return this.findOne({
             status: 'unlocked'
         }, projections.unlockedQuestion)

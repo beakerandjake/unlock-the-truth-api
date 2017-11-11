@@ -4,9 +4,9 @@ const _ = require('lodash');
 // Returns all of the questions in the question track to the user. 
 exports.getQuestions = (request, response, next) => {
     Promise.all([
-            Question.unlockedQuestionsVm(),
-            Question.currentQuestionVm(),
-            Question.lockedQuestionsVm(),
+            Question.getUnlockedQuestionsVm(),
+            Question.getCurrentQuestionVm(),
+            Question.getLockedQuestionsVm(),
         ])
         .then(result => {
             response.json({
@@ -34,7 +34,7 @@ exports.answerCurrentQuestion = (request, response, next) => {
     }
 
     // Get current question. 
-    Question.currentQuestionAndAnswer()
+    Question.getCurrentQuestionAndAnswer()
         .then(ensureCurrentQuestionExists)
         .then(checkAnswer)
         .catch(error => {
@@ -99,8 +99,8 @@ exports.answerCurrentQuestion = (request, response, next) => {
             .then(() => {
                 // Get the next/previous question for the vm. 
                 return Promise.all([
-                    Question.lastUnlockedQuestionVm(),
-                    Question.currentQuestionVm()
+                    Question.getLastUnlockedQuestionVm(),
+                    Question.getCurrentQuestionVm()
                 ]);
             })
             .then(result => {
