@@ -15,9 +15,7 @@ exports.getQuestions = (request, response, next) => {
                 lockedQuestions: result[2] || []
             });
         })
-        .catch(error => {
-            next(error);
-        });
+        .catch(next);
 };
 
 // Submit an answer for the current question. 
@@ -31,15 +29,15 @@ exports.answerCurrentQuestion = (request, response, next) => {
             status: 400,
             message: 'Answer was null or invalid type!'
         });
+    }error => {
+        next(error);
     }
 
     // Get current question. 
     Question.getCurrentQuestionAndAnswer()
         .then(ensureCurrentQuestionExists)
         .then(checkAnswer)
-        .catch(error => {
-            next(error);
-        });
+        .catch(next);
 
     // Throws bad request if current question does not exist. 
     function ensureCurrentQuestionExists(question) {
