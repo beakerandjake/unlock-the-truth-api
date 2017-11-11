@@ -9,7 +9,7 @@ router.get('/', questionController.getQuestions);
 // POST new question. 
 router.post('/', questionController.createQuestion);
 
-// POST answer for question
-router.post('/:questionId', questionController.answerQuestion);
+// POST answer for current question
+router.post('/answer', questionController.answerCurrentQuestion);
 
 module.exports = router;
