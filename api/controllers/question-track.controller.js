@@ -1,14 +1,12 @@
 const Question = require('../models/question');
-const mongoose = require('mongoose');
-const mockData = require('./mock-data.json');
 const _ = require('lodash');
 
 // Returns all of the questions in the question track to the user. 
 exports.getQuestions = (request, response, next) => {
     Promise.all([
-            Question.unlockedQuestions(),
-            Question.currentQuestion(),
-            Question.lockedQuestions(),
+            Question.unlockedQuestionsVm(),
+            Question.currentQuestionVm(),
+            Question.lockedQuestionsVm(),
         ])
         .then(result => {
             response.json({
@@ -36,7 +34,7 @@ exports.answerCurrentQuestion = (request, response, next) => {
     }
 
     // Get current question. 
-    Question.getCurrentQuestion()
+    Question.currentQuestionAndAnswer()
         .then(ensureCurrentQuestionExists)
         .then(checkAnswer)
         .catch(error => {
@@ -56,13 +54,13 @@ exports.answerCurrentQuestion = (request, response, next) => {
         return question;
     }
 
-    // See if the users answer matches the DB answer and handle accordingly. 
+    // See if the users getCurrentQuestionanswer matches the DB answer and handle accordingly. 
     function checkAnswer(question) {
         const lhs = _.trim(userAnswer).toLowerCase();
         const rhs = _.trim(question.answer).toLowerCase();
 
         if (lhs !== rhs) {
-            return handleWrongAnswer(question)
+            return handleWrongAnswer(question);
         }
 
         return handleCorrectAnswer(question);
@@ -71,7 +69,7 @@ exports.answerCurrentQuestion = (request, response, next) => {
     // Handle when the user answers the question with a wrong answer. 
     function handleWrongAnswer(question) {
         question.failedAttempts++;
-        question.save()
+        return question.save()
             .then(() => {
                 response.send({
                     correct: false
@@ -87,104 +85,103 @@ exports.answerCurrentQuestion = (request, response, next) => {
 
     // Handle when the user answers the question correctly.
     function handleCorrectAnswer(question) {
-        // response.json({
-        //     correct: true,
-        //     nextQuestion: newQuestion,
-        //     previousQuestion: previousQuestion
-        // });
+        question.status = 'unlocked';
+
+        return question.save()
+            .then(Question.unlockNextQuestion)
+            .then(() => {
+                return Promise.all([
+                    Question.lastUnlockedQuestionVm(),
+                    Question.currentQuestionVm()
+                ]);
+            })
+            .then(result => {
+                response.json({
+                    correct: true,
+                    previousQuestion: result[0] || {},
+                    nextQuestion: result[1] || {}
+                });
+            })
+            .catch(() => {
+                throw {
+                    status: 500,
+                    message: 'Could handle the correct answer!'
+                }
+            });
     }
-
-
-
-
-    // Get Question
-    // If doesn't exist return 404
-    // If isn't current question return 500
-    // If answer isn't correct return { correct: false }
-    //      Increment attempts
-    // If answer is correct
-    //      Add timeUnlocked
-    //      Change to unlocked
-
-    //Get the question which maps to the specified Id. 
-
-    //response.send('NOT IMPLEMENTED');
-    // const currentQuestion = mockData.currentQuestion;
-
-    // console.log(request.body);
-
-    // const questionId = 123;
-
-    // // Make a dummy previous question object. 
-    // const previousQuestion = {
-    //     id: questionId,
-    //     title: 'A great previous question',
-    //     body: 'Blah blah blah',
-    //     answer: 'Bob',
-    //     failedAttempts: 69,
-    //     answeredBy: 'Jim',
-    //     timeToAnswer: '6 hours',
-    //     number: currentQuestion.number
-    // };
-
-    // let newQuestion = null;
-
-    // const locked = mockData.lockedQuestions[0];
-
-    // if (locked) {
-    //     // Make a dummy new question object. 
-    //     newQuestion = {
-    //         id: locked.id,
-    //         title: 'Sint dolor aliqua cillum voluptate culpa nostrud consectetur anim.',
-    //         body: 'Who is cool?',
-    //         type: 'text',
-    //         number: locked.number
-    //     };
-    // }
-
-    // response.json({
-    //     correct: true,
-    //     nextQuestion: newQuestion,
-    //     previousQuestion: previousQuestion
-    // });
 };
 
 // Create a new question and save it to the database. 
 exports.createQuestion = (request, response, next) => {
 
-    // Generate the new question based on the provided body. 
-    const toSave = new Question({
-        status: 'locked',
-        title: request.body.title,
-        body: request.body.body,
-        type: request.body.type || 'text',
-        answer: request.body.answer
+    const questions = [new Question({
+        status: 'current',
+        title: '1',
+        body: '1',
+        type: 'text',
+        answer: '1',
+        number: 1,
+        timeUnlocked: new Date().toISOString()
+    })];
+
+    _.times(10, num => {
+        const questionNum = num + 2;
+        questions.push(new Question({
+            status: 'locked',
+            title: _.toString(questionNum),
+            body: _.toString(questionNum),
+            type: 'text',
+            answer: _.toString(questionNum),
+            number: questionNum
+        }));
     });
 
-    // Get the highest question number from the database. 
-    Question
-        .findOne({}, 'number')
-        .sort({
-            number: 'desc'
-        })
-        .limit(1)
-        // Now that we have highest number, save the new question to the database.
-        .then(result => {
-            const nextQuestionNumber = _.get(result, 'number', 0);
-            toSave.number = nextQuestionNumber + 1;
+    const promises = [];
 
-            // Always make first question unlocked
-            if (toSave.number === 1) {
-                toSave.status = 'current';
-                toSave.timeUnlocked = new Date().toISOString();
-            }
+    _.map(questions, question => {
+        return question.save();
+    });
 
-            return toSave.save();
-        })
-        .then(result => {
-            response.json(result);
+    Promise.all(promises)
+        .then(() => {
+            response.json('saved em');
         })
         .catch(error => {
             next(error);
         });
+    // // Generate the new question based on the provided body. 
+    // const toSave = new Question({
+    //     status: 'locked',
+    //     title: request.body.title,
+    //     body: request.body.body,
+    //     type: request.body.type || 'text',
+    //     answer: request.body.answer
+    // });
+
+    // // Get the highest question number from the database. 
+    // Question
+    //     .findOne({}, 'number')
+    //     .sort({
+    //         number: 'desc'
+    //     })
+    //     .limit(1)
+    //     // Now that we have highest number, save the new question to the database.
+    //     .then(result => {
+    //         const nextQuestionNumber = _.get(result, 'number', 0);
+    //         toSave.number = nextQuestionNumber + 1;
+
+    //         // Always make first question unlocked
+    //         if (toSave.number === 1) {
+    //             toSave.status = 'current';
+    //             toSave.timeUnlocked = new Date().toISOString();
+    //         }
+
+    //         return toSave.save();
+    //     })
+    //     .then(result => {
+    //         response.json(result);
+    //     })
+    //     .catch(error => {
+    //         next(error);
+    //     });
 };
