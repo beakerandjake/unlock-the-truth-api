@@ -6,10 +6,13 @@ const questionController = require('../controllers/question-track.controller');
 // GET all questions
 router.get('/', questionController.getQuestions);
 
-// POST new question. 
+// POST answer for current question
+router.post('/answer', questionController.answerCurrentQuestion);
+
+// POST DEBUG CREATE NEW QUESTION. 
 router.post('/', questionController.createQuestion);
 
-// POST answer for question
-router.post('/:questionId', questionController.answerQuestion);
+// GET DEBUG RESET. 
+router.get('/reset', questionController.reset);
 
 module.exports = router;

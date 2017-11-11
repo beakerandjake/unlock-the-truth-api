@@ -1,6 +1,12 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+// Defines projections that are reused by various static helper methods. 
+const projections = {
+    currentQuestion: 'title body type number timeUnlocked',
+    unlockedQuestion: 'title body answer failedAttempts timeUnlocked timeAnswered number'
+};
+
 const QuestionSchema = Schema({
     // What number is this question in the question-track?
     number: {
@@ -57,24 +63,47 @@ const QuestionSchema = Schema({
 });
 
 // Helper method which returns all questions with a 'locked' status. 
-QuestionSchema.statics.lockedQuestions = function () {
+QuestionSchema.statics.getLockedQuestionsVm = function () {
     return this.find({
-        status: 'locked'
-    }, 'title number');
+            status: 'locked'
+        }, 'title number')
+        .sort({
+            number: 'asc'
+        });
 };
 
 // Helper method which returns all questions with a 'current' status. 
-QuestionSchema.statics.currentQuestion = function () {
+QuestionSchema.statics.getCurrentQuestionVm = function () {
     return this.findOne({
         status: 'current'
-    }, 'title body type number timeUnlocked');
+    }, projections.currentQuestion);
 };
 
 // Helper method which returns all questions with an 'unlocked' status. 
-QuestionSchema.statics.unlockedQuestions = function () {
+QuestionSchema.statics.getUnlockedQuestionsVm = function () {
     return this.find({
-        status: 'unlocked'
-    }, 'title body answer failedAttempts timeUnlocked timeAnswered number');
+            status: 'unlocked'
+        }, projections.unlockedQuestion)
+        .sort({
+            number: 'asc'
+        });
+};
+
+// Helper method which returns the current question (if any). 
+QuestionSchema.statics.getCurrentQuestionAndAnswer = function () {
+    return this.findOne({
+        status: 'current'
+    }, 'answer failedAttempts');
+}
+
+// Helper method which returns the last unlocked question (if any).
+QuestionSchema.statics.getLastUnlockedQuestionVm = function () {
+    return this.findOne({
+            status: 'unlocked'
+        }, projections.unlockedQuestion)
+        .sort({
+            number: 'desc'
+        });
 };
 
 module.exports = mongoose.model('Question', QuestionSchema);
