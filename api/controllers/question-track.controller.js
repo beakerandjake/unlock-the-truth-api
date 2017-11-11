@@ -2,7 +2,7 @@ const Question = require('../models/question');
 const _ = require('lodash');
 
 // Returns all of the questions in the question track to the user. 
-exports.getQuestions = (request, response, next) => {
+exports.getQuestions = (request, response, next) => {    
     Promise.all([
             Question.getUnlockedQuestionsVm(),
             Question.getCurrentQuestionVm(),
@@ -29,8 +29,6 @@ exports.answerCurrentQuestion = (request, response, next) => {
             status: 400,
             message: 'Answer was null or invalid type!'
         });
-    }error => {
-        next(error);
     }
 
     // Get current question. 
