@@ -1,5 +1,4 @@
 const Question = require('../models/question');
-const mongoose = require('mongoose');
 const mockData = require('./mock-data.json');
 const _ = require('lodash');
 
@@ -23,57 +22,17 @@ exports.getQuestions = (request, response, next) => {
 };
 
 // Submit an answer for the specified question. 
-exports.answerCurrentQuestion = (request, response, next) => {
-    // Grab the params we need. 
+exports.answerQuestion = (request, response) => {
+    const questionId = request.params.questionId;
     const answer = request.body.answer;
-    // Validate param. 
-    if (!answer || !_.isString(answer)) {
-        return next({
-            status: 400,
-            message: 'Answer was null or invalid type!'
-        });
-    }
 
-    // Get current question. 
-    Question.getCurrentQuestion()
-        .then(ensureCurrentQuestionExists)
-        .then(checkAnswer)
-        .catch(error => {
-            next(error);
-        });
+    console.log('questionId:', questionId,'answer:', answer);
 
-    // Throws bad request if current question does not exist. 
-    function ensureCurrentQuestionExists(result) {
-        console.log('got current question', result);
-        if (!result) {
-            // No current question? Bad request. 
-            throw {
-                status: 400,
-                message: 'There is not a current question to answer!'
-            };
-        }
+    response.json({
+        params: request.params,
+        body: request.body
+    });
 
-        return result;
-    }
-
-    function checkAnswer(result) {
-        console.log('checking:', result);
-        response.json(result);
-    }
-
-
-
-
-    // Get Question
-    // If doesn't exist return 404
-    // If isn't current question return 500
-    // If answer isn't correct return { correct: false }
-    //      Increment attempts
-    // If answer is correct
-    //      Add timeUnlocked
-    //      Change to unlocked
-
-    //Get the question which maps to the specified Id. 
 
     //response.send('NOT IMPLEMENTED');
     // const currentQuestion = mockData.currentQuestion;

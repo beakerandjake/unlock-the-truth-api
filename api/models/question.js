@@ -77,11 +77,4 @@ QuestionSchema.statics.unlockedQuestions = function () {
     }, 'title body answer failedAttempts timeUnlocked timeAnswered number');
 };
 
-// Helper method which returns the current question and answer(if any). 
-QuestionSchema.statics.getCurrentQuestion = function () {
-    return this.findOne({
-        status: 'current'
-    });
-}
-
 module.exports = mongoose.model('Question', QuestionSchema);
