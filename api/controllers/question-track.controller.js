@@ -25,9 +25,10 @@ exports.getQuestions = (request, response, next) => {
 // Submit an answer for the specified question. 
 exports.answerCurrentQuestion = (request, response, next) => {
     // Grab the params we need. 
-    const answer = request.body.answer;
+    const userAnswer = request.body.answer;
+
     // Validate param. 
-    if (!answer || !_.isString(answer)) {
+    if (!userAnswer || !_.isString(userAnswer)) {
         return next({
             status: 400,
             message: 'Answer was null or invalid type!'
@@ -43,9 +44,8 @@ exports.answerCurrentQuestion = (request, response, next) => {
         });
 
     // Throws bad request if current question does not exist. 
-    function ensureCurrentQuestionExists(result) {
-        console.log('got current question', result);
-        if (!result) {
+    function ensureCurrentQuestionExists(question) {
+        if (!question) {
             // No current question? Bad request. 
             throw {
                 status: 400,
@@ -53,12 +53,45 @@ exports.answerCurrentQuestion = (request, response, next) => {
             };
         }
 
-        return result;
+        return question;
     }
 
-    function checkAnswer(result) {
-        console.log('checking:', result);
-        response.json(result);
+    // See if the users answer matches the DB answer and handle accordingly. 
+    function checkAnswer(question) {
+        const lhs = _.trim(userAnswer).toLowerCase();
+        const rhs = _.trim(question.answer).toLowerCase();
+
+        if (lhs !== rhs) {
+            return handleWrongAnswer(question)
+        }
+
+        return handleCorrectAnswer(question);
+    }
+
+    // Handle when the user answers the question with a wrong answer. 
+    function handleWrongAnswer(question) {
+        question.failedAttempts++;
+        question.save()
+            .then(() => {
+                response.send({
+                    correct: false
+                });
+            })
+            .catch(() => {
+                throw {
+                    status: 500,
+                    message: 'Failed to handle wrong answer!'
+                };
+            });
+    }
+
+    // Handle when the user answers the question correctly.
+    function handleCorrectAnswer(question) {
+        // response.json({
+        //     correct: true,
+        //     nextQuestion: newQuestion,
+        //     previousQuestion: previousQuestion
+        // });
     }
 
 
