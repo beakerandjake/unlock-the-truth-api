@@ -65,8 +65,11 @@ const QuestionSchema = Schema({
 // Helper method which returns all questions with a 'locked' status. 
 QuestionSchema.statics.lockedQuestionsVm = function () {
     return this.find({
-        status: 'locked'
-    }, 'title number');
+            status: 'locked'
+        }, 'title number')
+        .sort({
+            number: 'asc'
+        });
 };
 
 // Helper method which returns all questions with a 'current' status. 
@@ -79,8 +82,11 @@ QuestionSchema.statics.currentQuestionVm = function () {
 // Helper method which returns all questions with an 'unlocked' status. 
 QuestionSchema.statics.unlockedQuestionsVm = function () {
     return this.find({
-        status: 'unlocked'
-    }, projections.unlockedQuestion);
+            status: 'unlocked'
+        }, projections.unlockedQuestion)
+        .sort({
+            number: 'asc'
+        });
 };
 
 // Helper method which returns the current question (if any). 
@@ -99,30 +105,5 @@ QuestionSchema.statics.lastUnlockedQuestionVm = function () {
             number: 'desc'
         });
 };
-
-// Helper method which unlocks the next question. 
-QuestionSchema.statics.unlockNextQuestion = function () {
-    return this.findOne({
-        status: 'locked'
-    })
-    .sort({
-        number: 'asc'
-    })
-    .then(result => {
-        // Bail if there isn't a next question. 
-        if(!result){
-            return;
-        }
-        // Set this question as the current question. 
-        result.status = 'current';
-        result.timeUnlocked = new Date().toISOString();
-
-        return result.save();
-    });
-};
-
-
-
-
 
 module.exports = mongoose.model('Question', QuestionSchema);

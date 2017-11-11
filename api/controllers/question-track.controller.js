@@ -43,6 +43,7 @@ exports.answerCurrentQuestion = (request, response, next) => {
 
     // Throws bad request if current question does not exist. 
     function ensureCurrentQuestionExists(question) {
+        console.log('ensure current exists');
         if (!question) {
             // No current question? Bad request. 
             throw {
@@ -54,8 +55,9 @@ exports.answerCurrentQuestion = (request, response, next) => {
         return question;
     }
 
-    // See if the users getCurrentQuestionanswer matches the DB answer and handle accordingly. 
+    // See if the users answer matches the DB answer and handle accordingly. 
     function checkAnswer(question) {
+        console.log('check answer');
         const lhs = _.trim(userAnswer).toLowerCase();
         const rhs = _.trim(question.answer).toLowerCase();
 
@@ -68,9 +70,12 @@ exports.answerCurrentQuestion = (request, response, next) => {
 
     // Handle when the user answers the question with a wrong answer. 
     function handleWrongAnswer(question) {
+        // Increment failed attempts
         question.failedAttempts++;
+
         return question.save()
             .then(() => {
+                // Inform the user they got it wrong. 
                 response.send({
                     correct: false
                 });
@@ -85,18 +90,21 @@ exports.answerCurrentQuestion = (request, response, next) => {
 
     // Handle when the user answers the question correctly.
     function handleCorrectAnswer(question) {
+        // Update the question now that it is unlocked. 
         question.status = 'unlocked';
+        question.timeAnswered = new Date().toISOString();
 
         return question.save()
-            .then(Question.unlockNextQuestion)
+            .then(unlockNextQuestion)
             .then(() => {
-                console.log('next question unlocked');
+                // Get the next/previous question for the vm. 
                 return Promise.all([
                     Question.lastUnlockedQuestionVm(),
                     Question.currentQuestionVm()
                 ]);
             })
             .then(result => {
+                // Let the user know they got it right, send them info about the previous question, as well as their next question. 
                 response.json({
                     correct: true,
                     previousQuestion: result[0] || {},
@@ -110,6 +118,29 @@ exports.answerCurrentQuestion = (request, response, next) => {
                 }
             });
     }
+
+    // Set the next locked question as the current question. 
+    function unlockNextQuestion() {
+        return Question.findOne({
+                status: 'locked'
+            })
+            .sort({
+                number: 'asc'
+            })
+            .then(result => {
+                // Bail if there isn't a next question. 
+                if (!result) {
+                    return;
+                }
+
+                // Set this question as the current question. 
+                result.status = 'current';
+                result.timeUnlocked = new Date().toISOString();
+
+                return result.save();
+            });
+    }
+
 };
 
 // Create a new question and save it to the database. 
