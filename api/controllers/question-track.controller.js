@@ -90,7 +90,6 @@ exports.answerCurrentQuestion = (request, response, next) => {
         return question.save()
             .then(Question.unlockNextQuestion)
             .then(() => {
-                console.log('next question unlocked');
                 return Promise.all([
                     Question.lastUnlockedQuestionVm(),
                     Question.currentQuestionVm()
@@ -143,10 +142,7 @@ exports.createQuestion = (request, response, next) => {
         return question.save();
     });
 
-    Question.remove({})
-        .then(() => {
-            return Promise.all(promises);
-        })
+    Promise.all(promises)
         .then(() => {
             response.json('saved em');
         })
