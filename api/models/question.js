@@ -1,12 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-// Defines projections that are reused by various static helper methods. 
-const projections = {
-    currentQuestion: 'title body type number timeUnlocked',
-    unlockedQuestion: 'title body answer failedAttempts timeUnlocked timeAnswered number'
-};
-
 const QuestionSchema = Schema({
     // What number is this question in the question-track?
     number: {
@@ -63,66 +57,31 @@ const QuestionSchema = Schema({
 });
 
 // Helper method which returns all questions with a 'locked' status. 
-QuestionSchema.statics.lockedQuestionsVm = function () {
+QuestionSchema.statics.lockedQuestions = function () {
     return this.find({
         status: 'locked'
     }, 'title number');
 };
 
 // Helper method which returns all questions with a 'current' status. 
-QuestionSchema.statics.currentQuestionVm = function () {
+QuestionSchema.statics.currentQuestion = function () {
     return this.findOne({
         status: 'current'
-    }, projections.currentQuestion);
+    }, 'title body type number timeUnlocked');
 };
 
 // Helper method which returns all questions with an 'unlocked' status. 
-QuestionSchema.statics.unlockedQuestionsVm = function () {
+QuestionSchema.statics.unlockedQuestions = function () {
     return this.find({
         status: 'unlocked'
-    }, projections.unlockedQuestion);
+    }, 'title body answer failedAttempts timeUnlocked timeAnswered number');
 };
 
-// Helper method which returns the current question (if any). 
-QuestionSchema.statics.currentQuestionAndAnswer = function () {
+// Helper method which returns the current question and answer(if any). 
+QuestionSchema.statics.getCurrentQuestion = function () {
     return this.findOne({
         status: 'current'
-    }, 'answer failedAttempts');
-}
-
-// Helper method which returns the last unlocked question (if any).
-QuestionSchema.statics.lastUnlockedQuestionVm = function () {
-    return this.findOne({
-            status: 'unlocked'
-        }, projections.unlockedQuestion)
-        .sort({
-            number: 'desc'
-        });
-};
-
-// Helper method which unlocks the next question. 
-QuestionSchema.statics.unlockNextQuestion = function () {
-    return this.findOne({
-        status: 'locked'
-    })
-    .sort({
-        number: 'asc'
-    })
-    .then(result => {
-        // Bail if there isn't a next question. 
-        if(!result){
-            return;
-        }
-        // Set this question as the current question. 
-        result.status = 'current';
-        result.timeUnlocked = new Date().toISOString();
-
-        return result.save();
     });
-};
-
-
-
-
+}
 
 module.exports = mongoose.model('Question', QuestionSchema);
