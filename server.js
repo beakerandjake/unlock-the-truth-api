@@ -10,6 +10,7 @@ const envConfig = require('dotenv').config();
 
 // API Routes. 
 const questionTrackRoutes = require('./api/routes/question-track.routes');
+const theTruthRoutes = require('./api/routes/the-truth.routes');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -39,8 +40,9 @@ db.on('open', () => {
     console.log('connected');
 });
 
-// Add the routing for the question track. 
+// Add our routes
 app.use('/questions', questionTrackRoutes);
+app.use('/thetruth', theTruthRoutes);
 
 // Add 404 error handler. 
 app.use(notFoundErrorHandler);
