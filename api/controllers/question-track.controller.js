@@ -11,7 +11,7 @@ exports.getQuestions = (request, response, next) => {
         .then(result => {
             response.json({
                 unlockedQuestions: result[0] || [],
-                currentQuestion: result[1] || {},
+                currentQuestion: result[1] || null,
                 lockedQuestions: result[2] || []
             });
         })
@@ -105,8 +105,8 @@ exports.answerCurrentQuestion = (request, response, next) => {
                 // Let the user know they got it right, send them info about the previous question, as well as their next question. 
                 response.json({
                     correct: true,
-                    previousQuestion: result[0] || {},
-                    nextQuestion: result[1] || {}
+                    previousQuestion: result[0] || null,
+                    nextQuestion: result[1] || null
                 });
             })
             .catch(() => {
@@ -192,7 +192,7 @@ exports.reset = (request, response, next) => {
         timeUnlocked: new Date().toISOString()
     })];
 
-    _.times(10, num => {
+    _.times(3, num => {
         const questionNum = num + 2;
         questions.push(new Question({
             status: 'locked',
@@ -204,14 +204,14 @@ exports.reset = (request, response, next) => {
         }));
     });
 
-    const promises = [];
-
-    _.map(questions, question => {
-        return question.save();
-    });
-
     Question.remove({})
         .then(() => {
+            const promises = [];
+
+            _.map(questions, question => {
+                return question.save();
+            });
+
             return Promise.all(promises);
         })
         .then(() => {
