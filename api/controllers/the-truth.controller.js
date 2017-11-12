@@ -14,7 +14,7 @@ exports.getTheTruth = function (request, response, next) {
         .then(ensureUserHasUnlockedAllQuestions)
         .then(unlockTheTruth)
         .then(returnTheTruth)
-        .catch(next);
+        .catch(handleFailure);
 
     // Explodes if the user has not met the requirements to unlock the truth. 
     function ensureUserHasUnlockedAllQuestions(result) {
@@ -22,6 +22,7 @@ exports.getTheTruth = function (request, response, next) {
         const unlockedQuestionCount = result[1];
 
         if (totalQuestionCount <= 0) {
+
             throw {
                 status: 403,
                 message: 'Cannot unlock the truth because there aren\'t any questions!'
@@ -31,7 +32,7 @@ exports.getTheTruth = function (request, response, next) {
         if (totalQuestionCount !== unlockedQuestionCount) {
             throw {
                 status: 403,
-                message: 'Cannot unlock the truth because the user has not unlocked all the questions!'
+                message: 'Cannot unlock the truth because the all the questions haven\'t been completed!'
             };
         }
     }
@@ -43,6 +44,21 @@ exports.getTheTruth = function (request, response, next) {
 
     // Let the user finally see the truth! 
     function returnTheTruth(result) {
-        response.json(result);
+        response.json({
+            unlocked: true,
+            theTruth: result
+        });
+    }
+
+    function handleFailure(error) {
+        if (error && error.status === 403) {
+            response.json({
+                unlocked: false,
+                message: error.message || 'The truth is not ready to be unlocked!'
+            });
+            return;
+        }
+
+        next(error);
     }
 };
