@@ -1,9 +1,7 @@
 const helmet = require('helmet');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const session = require('express-session');
 const mongoose = require('mongoose');
-const MongoStore = require('connect-mongo')(session);
 const dbConfig = require('../configuration/db.config');
 
 // Configure our express application
@@ -17,22 +15,5 @@ module.exports = function (app, passport) {
         credentials: true
     }));
     app.use(bodyParser.json());
-
-    // configure express to use session and save in our db. 
-    app.use(session({
-        name: 'utt.session',
-        resave: false,
-        saveUninitialized: true,
-        secret: 'keyboard cat',
-        store: new MongoStore({
-            mongooseConnection: mongoose.connection,
-            collection: 'sessions'
-        })
-    }));
-
-    // configure express to use passport session
     app.use(passport.initialize());
-    app.use(passport.session());
-
-    // TODO CSRF
 };
