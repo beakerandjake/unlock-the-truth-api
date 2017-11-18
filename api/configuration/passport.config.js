@@ -31,16 +31,4 @@ module.exports = function (passport) {
         }
     ));
 
-    // Configure Passport authenticated session persistence.
-
-    passport.serializeUser(function (user, cb) {
-        cb(null, user.id);
-    });
-
-    passport.deserializeUser(function (id, cb) {
-        User.findById(id, function (err, user) {
-            cb(err, user);
-        });
-    });
-
 };
