@@ -38,13 +38,9 @@ module.exports = function (passport) {
     });
 
     passport.deserializeUser(function (id, cb) {
-        User.findById(id)
-            .then(user => {
-                cb(null, user);
-            })
-            .catch(error => {
-                return cb(error);
-            });
+        User.findById(id, function (err, user) {
+            cb(err, user);
+        });
     });
 
 };
