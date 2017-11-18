@@ -10,4 +10,4 @@ module.exports = function (request, response, next) {
             message: 'You must be logged in to perform this action!'
         });
     }
-}
+};
