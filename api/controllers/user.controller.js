@@ -16,8 +16,10 @@ exports.createUser = function (request, response, next) {
         .catch(next);
 };
 
+// Expect this route to be protected by passport, if this method gets invoked,
+// it means the user successfully logged in.
 exports.login = function (request, response, next) {
-    response.json("Great Job!");
+    response.sendStatus(200);
 }
 
 exports.logout = function (request, response, next) {
