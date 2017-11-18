@@ -17,7 +17,7 @@ exports.createUser = function (request, response, next) {
 };
 
 exports.login = function (request, response, next) {
-    resposne.json("Great Job!");
+    response.json("Great Job!");
 }
 
 exports.logout = function (request, response, next) {
