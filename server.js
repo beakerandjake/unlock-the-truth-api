@@ -2,6 +2,7 @@ const envConfig = require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const passport = require('passport');
+const dbConfig = require('./api/configuration/db.config');
 const passportConfig = require('./api/configuration/passport.config');
 const expressConfig = require('./api/configuration/express.config');
 const routeConfig = require('./api/configuration/routes.config.js');
@@ -32,6 +33,6 @@ function connect() {
         pass: process.env.DB_PASSWORD
     };
     mongoose.Promise = global.Promise;
-    mongoose.connect('mongodb://ds243055.mlab.com:43055/unlock-the-truth', options);
+    mongoose.connect(dbConfig.url, options);
     return mongoose.connection;
 }
