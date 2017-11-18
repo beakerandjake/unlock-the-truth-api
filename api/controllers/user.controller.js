@@ -52,9 +52,10 @@ exports.login = function (request, response, next) {
             });
         }
 
+        const jwt = user.generateJwt();
+
         response.json({
-            message: 'great job!',
-            userId: user.name
+            token: jwt
         });
 
     })(request, response, next);
