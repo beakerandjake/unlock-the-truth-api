@@ -9,7 +9,7 @@ module.exports = function (passport) {
     router.post('/login', passport.authenticate('local'), userController.login);
 
     // Logout
-    router.post('/logout', requireLogin,  userController.logout);
+    router.post('/logout', requireLogin, userController.logout);
 
     // Create user (temp)
     router.post('/', userController.createUser);
