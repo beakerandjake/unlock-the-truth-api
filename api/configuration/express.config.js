@@ -33,4 +33,6 @@ module.exports = function (app, passport) {
     // configure express to use passport session
     app.use(passport.initialize());
     app.use(passport.session());
+
+    // TODO CSRF
 };
