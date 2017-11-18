@@ -6,9 +6,6 @@ const requireLogin = require('../middleware/require-login.middleware');
 // Login
 router.post('/login', userController.login);
 
-// Logout
-router.post('/logout', requireLogin, userController.logout);
-
 // Create user (temp)
 router.post('/', userController.createUser);
 

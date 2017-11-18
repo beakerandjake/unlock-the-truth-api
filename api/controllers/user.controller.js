@@ -31,7 +31,7 @@ exports.createUser = function (request, response, next) {
     });
 
     newUser.save()
-        .then(result => {
+        .then(() => {
             response.json({
                 message: 'saved new user!',
             });
@@ -40,7 +40,7 @@ exports.createUser = function (request, response, next) {
 };
 
 exports.login = function (request, response, next) {
-    passport.authenticate('local', function (err, user, info) {
+    passport.authenticate('local', function (err, user) {
         if (err) {
             return next(err);
         }
@@ -58,11 +58,4 @@ exports.login = function (request, response, next) {
         });
 
     })(request, response, next);
-}
-
-// Expect this route to require user logged in. 
-// Clear the users login session. 
-exports.logout = function (request, response, next) {
-    request.logout();
-    response.sendStatus(200);
-}
+};
