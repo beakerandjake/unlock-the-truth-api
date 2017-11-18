@@ -11,6 +11,7 @@ const envConfig = require('dotenv').config();
 // API Routes. 
 const questionTrackRoutes = require('./api/routes/question-track.routes');
 const theTruthRoutes = require('./api/routes/the-truth.routes');
+const userRoutes = require('./api/routes/user.routes');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -43,6 +44,7 @@ db.on('open', () => {
 // Add our routes
 app.use('/questions', questionTrackRoutes);
 app.use('/thetruth', theTruthRoutes);
+app.use('/user', userRoutes);
 
 // Add 404 error handler. 
 app.use(notFoundErrorHandler);
