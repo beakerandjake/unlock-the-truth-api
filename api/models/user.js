@@ -1,3 +1,4 @@
+const crypto = require('crypto');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
@@ -6,7 +7,10 @@ const Schema = mongoose.Schema;
 const UserSchema = Schema({
     username: {
         type: String,
-        required: true
+        required: true,
+        index: {
+            unique: true
+        }
     },
     hashedPassword: {
         type: String,
@@ -18,10 +22,45 @@ const UserSchema = Schema({
     }
 });
 
+// Create virtual property that controllers can set. 
+// When this property is set, it will automatically generate the salt/hash 
+UserSchema
+    .virtual('password')
+    .set(function (password) {
+        this._password = password;
+        this.salt = this.getSalt();
+        this.hashedPassword = this.hashPassword(password);
+    })
+    .get(function () {
+        return this._password;
+    });
+
 // Does the provided password match the stored password?  
 UserSchema.methods.validPassword = function (plainTextPassword) {
-    // TODO hash  
-    return plainTextPassword === this.password;
+    return this.hashPassword(plainTextPassword) === this.hashedPassword;
 };
+
+// Returns a salt which is used to hash the password. 
+UserSchema.methods.getSalt = function () {
+    return crypto
+        .randomBytes(Math.ceil(64 / 2))
+        .toString('hex')
+        .slice(0, 64);
+}
+
+// Generate a hashed version of the password. Returns '' if failed.
+UserSchema.methods.hashPassword = function (password) {
+    if (!password) {
+        return '';
+    }
+    try {
+        return crypto
+            .createHmac('sha512', this.salt)
+            .update(password)
+            .digest('hex');
+    } catch (err) {
+        return '';
+    }
+}
 
 module.exports = mongoose.model('User', UserSchema);
