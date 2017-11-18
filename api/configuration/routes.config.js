@@ -6,7 +6,7 @@ const errorHandler = require('api-error-handler');
 
 // Configure our APIs routing. 
 
-module.exports = function (app, passport) {
+module.exports = function (app) {
     // Add our routes
     app.use('/questions', questionTrackRoutes);
     app.use('/thetruth', theTruthRoutes);

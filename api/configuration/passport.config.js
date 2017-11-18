@@ -1,10 +1,11 @@
+const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const User = require('../models/user');
 
 
 // Configure passport for the API.  
 
-module.exports = function (passport) {
+module.exports = function () {
 
     // Use local strategy, hitting our DB to validate the user.  
 
