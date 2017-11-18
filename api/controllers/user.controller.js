@@ -1,16 +1,37 @@
+const _ = require('lodash');
 const User = require('../models/user');
 
+// TEMP METHOD, allow us to create a user. 
 exports.createUser = function (request, response, next) {
+
+    const username = request.body.username;
+    const password = request.body.password;
+
+    if (!username || !_.isString(username)) {
+        next({
+            status: 400,
+            message: 'Username is required!'
+        });
+        return;
+    }
+
+    if (!password || !_.isString(password)) {
+        next({
+            status: 400,
+            message: 'Password is required!'
+        });
+        return;
+    }
+
     const newUser = new User({
-        username: 'test',
-        password: 'password'
+        username: username,
+        password: password
     });
 
     newUser.save()
         .then(result => {
             response.json({
                 message: 'saved new user!',
-                user: result
             });
         })
         .catch(next);
