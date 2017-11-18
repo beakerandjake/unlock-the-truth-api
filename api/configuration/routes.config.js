@@ -10,7 +10,7 @@ module.exports = function (app, passport) {
     // Add our routes
     app.use('/questions', questionTrackRoutes);
     app.use('/thetruth', theTruthRoutes);
-    app.use('/user', userRoutes);
+    app.use('/user', userRoutes(passport));
 
     // Add 404 error handler. 
     app.use(notFoundErrorHandler);
