@@ -46,7 +46,7 @@ UserSchema.methods.getSalt = function () {
         .randomBytes(Math.ceil(64 / 2))
         .toString('hex')
         .slice(0, 64);
-}
+};
 
 // Generate a hashed version of the password. Returns '' if failed.
 UserSchema.methods.hashPassword = function (password) {
@@ -61,6 +61,6 @@ UserSchema.methods.hashPassword = function (password) {
     } catch (err) {
         return '';
     }
-}
+};
 
 module.exports = mongoose.model('User', UserSchema);

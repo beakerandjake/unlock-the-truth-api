@@ -94,7 +94,7 @@ QuestionSchema.statics.getCurrentQuestionAndAnswer = function () {
     return this.findOne({
         status: 'current'
     }, 'answer failedAttempts');
-}
+};
 
 // Helper method which returns the last unlocked question (if any).
 QuestionSchema.statics.getLastUnlockedQuestionVm = function () {
