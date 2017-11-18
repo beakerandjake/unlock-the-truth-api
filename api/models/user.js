@@ -1,5 +1,6 @@
 const crypto = require('crypto');
 const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
 const Schema = mongoose.Schema;
 
 // Represents a user, allows users to log into the website.  
@@ -61,6 +62,14 @@ UserSchema.methods.hashPassword = function (password) {
     } catch (err) {
         return '';
     }
+};
+
+// Return a signed JWT that represents this user.
+UserSchema.methods.generateJwt = function () {
+    return jwt.sign({}, process.env.JWT_SECRET, {
+        subject: this.username,
+        expiresIn: '7d'
+    });
 };
 
 module.exports = mongoose.model('User', UserSchema);
