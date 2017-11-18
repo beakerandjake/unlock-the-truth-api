@@ -1,6 +1,8 @@
 const _ = require('lodash');
 const User = require('../models/user');
 
+const passport = require('passport');
+
 // TEMP METHOD, allow us to create a user. 
 exports.createUser = function (request, response, next) {
 
@@ -37,10 +39,25 @@ exports.createUser = function (request, response, next) {
         .catch(next);
 };
 
-// Expect this route to require user logged in. 
-// If this method got invoked, the user is successfully logged in. 
 exports.login = function (request, response, next) {
-    response.sendStatus(200);
+    passport.authenticate('local', function (err, user, info) {
+        if (err) {
+            return next(err);
+        }
+
+        if (!user) {
+            return next({
+                status: 401,
+                message: 'Username or password was incorrect'
+            });
+        }
+
+        response.json({
+            message: 'great job!',
+            userId: user.name
+        });
+
+    })(request, response, next);
 }
 
 // Expect this route to require user logged in. 
