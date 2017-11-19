@@ -5,7 +5,9 @@ const userController = require('../controllers/user.controller');
 // Login
 router.post('/login', userController.login);
 
-// Create user (temp)
-router.post('/', userController.createUser);
+if (process.env.NODE_ENV === 'development') {
+    // Debug route to create a user
+    router.post('/', userController.createUser);
+}
 
 module.exports = router;
