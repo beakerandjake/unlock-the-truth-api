@@ -195,7 +195,8 @@ exports.reset = (request, response, next) => {
         questions.push(new Question({
             status: 'locked',
             title: _.toString(questionNum),
-            body: _.toString(questionNum),
+            currentBody: _.toString(questionNum),
+            unlockedBody: _.toString(questionNum),
             type: 'text',
             answer: _.toString(questionNum),
             number: questionNum
