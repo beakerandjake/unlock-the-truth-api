@@ -4,7 +4,8 @@
   "description": "An api for solving mysteries",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon server.js",
+    "start:dev": "nodemon server.js",
+    "start": "node server.js",
     "lint": "eslint 'api/**/*.js' || exit 0"
   },
   "repository": {
