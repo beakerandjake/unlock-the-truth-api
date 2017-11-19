@@ -4,7 +4,7 @@ module.exports = function (error, req, res, next) {
     if (error && error.name === 'UnauthorizedError') {
         next({
             status:401,
-            message: 'You are not authorized to perform that action.'
+            message: 'You must be logged in to perform that action'
         });
     }
 
