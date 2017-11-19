@@ -12,6 +12,6 @@ const TheTruthSchema = Schema({
 // Helper method which returns the truth to the user. 
 TheTruthSchema.statics.getTheTruth = function() {
     return this.findOne({}, 'body');
-}
+};
 
 module.exports = mongoose.model('TheTruth', TheTruthSchema);

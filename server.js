@@ -1,56 +1,37 @@
-// 3rd party 
-const express = require('express');
-const helmet = require('helmet');
-const cors = require('cors');
-const bodyParser = require('body-parser');
-const mongoose = require('mongoose');
-const errorHandler = require('api-error-handler');
-const notFoundErrorHandler = require('./api/middleware/not-found.middleware');
 const envConfig = require('dotenv').config();
+const express = require('express');
+const mongoose = require('mongoose');
+const dbConfig = require('./api/configuration/db.config');
+const passportConfig = require('./api/configuration/passport.config');
+const expressConfig = require('./api/configuration/express.config');
+const routeConfig = require('./api/configuration/routes.config.js');
 
-// API Routes. 
-const questionTrackRoutes = require('./api/routes/question-track.routes');
-const theTruthRoutes = require('./api/routes/the-truth.routes');
-
-const app = express();
 const port = process.env.PORT || 3000;
+const app = express();
 
-// Add helmet middleware. 
-app.use(helmet());
+passportConfig();
+expressConfig(app);
+routeConfig(app);
 
-// Add cors middleware. 
-app.use(cors());
+connect()
+    .on('error', console.log)
+    .on('disconnected', connect)
+    .once('open', listen);
 
-// Add JSON body parser middleware. 
-app.use(bodyParser.json());
-
-mongoose.Promise = global.Promise;
-mongoose.connect('mongodb://ds243055.mlab.com:43055/unlock-the-truth', {
-    useMongoClient: true,
-    user: process.env.DB_USER,
-    pass: process.env.DB_PASSWORD
-});
-
-const db = mongoose.connection;
-
-db.on('error', err => {
-    console.error('Error connecting to database', err);
-});
-db.on('open', () => {
-    console.log('connected');
-});
-
-// Add our routes
-app.use('/questions', questionTrackRoutes);
-app.use('/thetruth', theTruthRoutes);
-
-// Add 404 error handler. 
-app.use(notFoundErrorHandler);
-
-// Add error handler which returns JSON.
-app.use(errorHandler());
-
-// Start the server
-app.listen(port, function () {
+// Run our express app. 
+function listen() {
+    app.listen(port);
     console.log(`Listening on port ${port}.`);
-});
+}
+
+// Connect to our DB. 
+function connect() {
+    const options = {
+        useMongoClient: true,
+        user: process.env.DB_USER,
+        pass: process.env.DB_PASSWORD
+    };
+    mongoose.Promise = global.Promise;
+    mongoose.connect(dbConfig.url, options);
+    return mongoose.connection;
+}

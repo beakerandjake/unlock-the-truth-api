@@ -109,7 +109,7 @@ exports.answerCurrentQuestion = (request, response, next) => {
                 throw {
                     status: 500,
                     message: 'Could handle the correct answer!'
-                }
+                };
             });
     }
 
