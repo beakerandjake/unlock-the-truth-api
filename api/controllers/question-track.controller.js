@@ -143,7 +143,8 @@ exports.createQuestion = (request, response, next) => {
     const toSave = new Question({
         status: 'locked',
         title: request.body.title,
-        body: request.body.body,
+        unlockedBody: request.body.unlockedBody,
+        currentBody: request.body.currentBody,
         type: request.body.type || 'text',
         answer: request.body.answer
     });
@@ -181,7 +182,8 @@ exports.reset = (request, response, next) => {
     const questions = [new Question({
         status: 'current',
         title: '1',
-        body: '1',
+        currentBody: 'CURRENT 1',
+        unlockedBody: 'Unlocked 1',
         type: 'text',
         answer: '1',
         number: 1,

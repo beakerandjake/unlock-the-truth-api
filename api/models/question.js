@@ -3,8 +3,8 @@ const Schema = mongoose.Schema;
 
 // Defines projections that are reused by various static helper methods. 
 const projections = {
-    currentQuestion: 'title body type number timeUnlocked',
-    unlockedQuestion: 'title body answer failedAttempts timeUnlocked timeAnswered number'
+    currentQuestion: 'title currentBody type number timeUnlocked',
+    unlockedQuestion: 'title unlockedBody answer failedAttempts timeUnlocked timeAnswered number'
 };
 
 const QuestionSchema = Schema({
@@ -28,9 +28,14 @@ const QuestionSchema = Schema({
         type: String,
         required: true
     },
-    // The main content of the question displayed to the user. 
-    body: {
+    // The content of the question when the question has been unlocked.  
+    unlockedBody: {
         type: String,
+        required: true
+    },
+    // The content of the question when the user is answering it. 
+    currentBody: {
+        type:String, 
         required: true
     },
     // What time did the user unlock this question? 
