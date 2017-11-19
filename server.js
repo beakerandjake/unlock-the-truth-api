@@ -1,7 +1,6 @@
 const envConfig = require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
-const dbConfig = require('./api/configuration/db.config');
 const passportConfig = require('./api/configuration/passport.config');
 const expressConfig = require('./api/configuration/express.config');
 const routeConfig = require('./api/configuration/routes.config.js');
@@ -27,11 +26,9 @@ function listen() {
 // Connect to our DB. 
 function connect() {
     const options = {
-        useMongoClient: true,
-        user: process.env.DB_USER,
-        pass: process.env.DB_PASSWORD
+        useMongoClient: true
     };
     mongoose.Promise = global.Promise;
-    mongoose.connect(dbConfig.url, options);
+    mongoose.connect(process.env.MONGODB_URI, options);
     return mongoose.connection;
 }

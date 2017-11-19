@@ -9,9 +9,9 @@ const errorHandler = require('api-error-handler');
 
 module.exports = function (app) {
     // Add our routes
-    app.use('/questions', questionTrackRoutes);
-    app.use('/thetruth', theTruthRoutes);
-    app.use('/user', userRoutes);
+    app.use('/api/questions', questionTrackRoutes);
+    app.use('/api/thetruth', theTruthRoutes);
+    app.use('/api/user', userRoutes);
 
     // Auth error handling
     app.use(authErrorHandler);

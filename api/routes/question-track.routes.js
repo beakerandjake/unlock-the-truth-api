@@ -12,10 +12,14 @@ router.post('/answer', jwt({
     secret: process.env.JWT_SECRET
 }), questionController.answerCurrentQuestion);
 
-// POST DEBUG CREATE NEW QUESTION. 
-router.post('/', questionController.createQuestion);
 
-// GET DEBUG RESET. 
-router.get('/reset', questionController.reset);
+if (process.env.NODE_ENV === 'development') {
+    // POST DEBUG CREATE NEW QUESTION. 
+    router.post('/', questionController.createQuestion);
+
+    // GET DEBUG RESET. 
+    router.get('/reset', questionController.reset);
+}
+
 
 module.exports = router;
