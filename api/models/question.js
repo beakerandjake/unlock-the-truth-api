@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 // Defines projections that are reused by various static helper methods. 
 const projections = {
     currentQuestion: 'title currentBody type number timeUnlocked',
-    unlockedQuestion: 'title unlockedBody answer failedAttempts timeUnlocked timeAnswered number'
+    unlockedQuestion: 'title unlockedBody type answer failedAttempts timeUnlocked timeAnswered number'
 };
 
 const QuestionSchema = Schema({
@@ -57,7 +57,7 @@ const QuestionSchema = Schema({
     type: {
         type: String,
         required: true,
-        enum: ['text', 'manual'],
+        enum: ['text', 'manual', 'click'],
         default: 'text'
     },
     // The questions answer. TODO: if this becomes more complex, need to rethink how this works. 
