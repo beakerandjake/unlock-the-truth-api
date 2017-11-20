@@ -13,7 +13,7 @@ module.exports = function (app) {
     app.use('/api/thetruth', theTruthRoutes);
     app.use('/api/user', userRoutes);
 
-    if (process.env.NODE_ENVIRONMENT === 'production') {
+    if (process.env.NODE_ENV === 'production') {
         // Put login route behind rate limiter.
         addRateLimiter(app, '/api/user');
     }
