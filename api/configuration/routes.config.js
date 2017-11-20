@@ -15,8 +15,10 @@ module.exports = function (app) {
     app.use('/api/thetruth', theTruthRoutes);
     app.use('/api/user', userRoutes);
 
-    // Put login route behind rate limiter.
-    addRateLimiter(app, '/api/user');
+    if (process.env.NODE_ENVIRONMENT === 'production') {
+        // Put login route behind rate limiter.
+        addRateLimiter(app, '/api/user');
+    }
 
     // Auth error handling
     app.use(authErrorHandler);
@@ -33,10 +35,8 @@ function addRateLimiter(app, route) {
     // Create our rate limiter
     const rateLimiter = expressLimiter(app, redisClient);
 
-    var limiter = require('express-limiter')(app, client);
-
     // Protect the login route behind rate limiter.
-    limiter({
+    rateLimiter({
         path: route,
         method: 'get',
         lookup: ['connection.remoteAddress'],
