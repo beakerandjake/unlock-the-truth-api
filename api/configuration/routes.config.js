@@ -47,6 +47,7 @@ function addRateLimiter(app, route) {
         total: 5,
         expire: 1000 * 60 * 60,
         onRateLimited: function (req, res, next) {
+            console.log("RATE LIMITED!");
             next({
                 message: 'Rate limit exceeded',
                 status: 429
