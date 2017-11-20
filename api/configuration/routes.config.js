@@ -15,7 +15,7 @@ module.exports = function (app) {
 
     if (process.env.NODE_ENV === 'production') {
         // Put login route behind rate limiter.
-        addRateLimiter(app, '/api/user');
+        addRateLimiter(app, '/api/user/login');
     }
 
     // Auth error handling
@@ -38,9 +38,9 @@ function addRateLimiter(app, route) {
     // Create our rate limiter
     const rateLimiter = expressLimiter(app, redisClient);
 
-    // Protect the login route behind rate limiter.
+    // Protect the route behind the limiter. 
     rateLimiter({
-        path: route,
+        path: 'route',
         method: 'get',
         lookup: ['connection.remoteAddress'],
         // 150 requests per hour
