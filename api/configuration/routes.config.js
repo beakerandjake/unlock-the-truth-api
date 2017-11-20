@@ -1,6 +1,4 @@
 const errorHandler = require('api-error-handler');
-const expressLimiter = require('express-limiter');
-const redisClient = require('redis').createClient();
 const questionTrackRoutes = require('../routes/question-track.routes');
 const theTruthRoutes = require('../routes/the-truth.routes');
 const userRoutes = require('../routes/user.routes');
@@ -32,6 +30,9 @@ module.exports = function (app) {
 
 // Add rate limiter to specified route.  
 function addRateLimiter(app, route) {
+    const expressLimiter = require('express-limiter');
+    const redisClient = require('redis').createClient();
+
     // Create our rate limiter
     const rateLimiter = expressLimiter(app, redisClient);
 
