@@ -45,6 +45,12 @@ function addRateLimiter(app, route) {
         lookup: ['connection.remoteAddress'],
         // 150 requests per hour
         total: 5,
-        expire: 1000 * 60 * 60
+        expire: 1000 * 60 * 60,
+        onRateLimited: function (req, res, next) {
+            next({
+                message: 'Rate limit exceeded',
+                status: 429
+            })
+        }
     });
 }
