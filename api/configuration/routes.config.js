@@ -42,7 +42,7 @@ function addRateLimiter(app, route) {
         method: 'get',
         lookup: ['connection.remoteAddress'],
         // 150 requests per hour
-        total: 150,
+        total: 5,
         expire: 1000 * 60 * 60
     });
 }
