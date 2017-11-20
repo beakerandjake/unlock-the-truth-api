@@ -57,7 +57,7 @@ const QuestionSchema = Schema({
     type: {
         type: String,
         required: true,
-        enum: ['text', 'manual'],
+        enum: ['text', 'manual', 'click'],
         default: 'text'
     },
     // The questions answer. TODO: if this becomes more complex, need to rethink how this works. 
