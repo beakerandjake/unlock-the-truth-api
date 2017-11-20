@@ -31,7 +31,9 @@ module.exports = function (app) {
 // Add rate limiter to specified route.  
 function addRateLimiter(app, route) {
     const expressLimiter = require('express-limiter');
-    const redisClient = require('redis').createClient();
+    const redisClient = require('redis').createClient({
+        url: process.env.REDISTOGO_URL
+    });
 
     // Create our rate limiter
     const rateLimiter = expressLimiter(app, redisClient);
