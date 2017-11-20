@@ -41,7 +41,7 @@ function addRateLimiter(app, route) {
     // Protect the route behind the limiter. 
     rateLimiter({
         path: route,
-        method: 'get',
+        method: 'all',
         lookup: ['connection.remoteAddress'],
         // 150 requests per hour
         total: 5,
@@ -50,7 +50,7 @@ function addRateLimiter(app, route) {
             next({
                 message: 'Rate limit exceeded',
                 status: 429
-            })
+            });
         }
     });
 }
