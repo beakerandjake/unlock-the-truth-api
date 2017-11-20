@@ -40,7 +40,7 @@ function addRateLimiter(app, route) {
 
     // Protect the route behind the limiter. 
     rateLimiter({
-        path: 'route',
+        path: route,
         method: 'get',
         lookup: ['connection.remoteAddress'],
         // 150 requests per hour
