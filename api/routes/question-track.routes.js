@@ -18,6 +18,7 @@ const rateLimiter = RateLimit({
 
 // POST answer for current question
 // Protected behind JWT middleware (user must provide valid jwt token to access route)
+// Also protected behind rate limiter
 router.post('/answer', jwt({
     secret: process.env.JWT_SECRET
 }), rateLimiter, questionController.answerCurrentQuestion);
