@@ -10,4 +10,5 @@ module.exports = function (app) {
     app.use(cors());
     app.use(bodyParser.json());
     app.use(passport.initialize());
+    app.enable('trust proxy');    
 };
