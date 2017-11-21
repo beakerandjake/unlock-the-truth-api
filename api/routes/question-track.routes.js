@@ -9,11 +9,10 @@ router.get('/', questionController.getQuestions);
 
 // Protect answer route from brute force
 const rateLimiter = RateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minute window 
-    delayAfter: 100, // begin slowing down responses after the 100th request 
-    delayMs: 3 * 1000, // slow down subsequent responses by 3 seconds per request 
+    windowMs: 30 * 60 * 1000, // 15 minute window 
+    delayMs: 0, // disable slowdown    
     max: 250, // start blocking after 250 requests 
-    message: "Too many answer attempts, please try again in 15 minutes"
+    message: "Too many answer attempts, please try again in 30 minutes"
 });
 
 // POST answer for current question
