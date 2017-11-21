@@ -5,11 +5,10 @@ const RateLimit = require('express-rate-limit');
 
 // Protect login route from brute force
 const rateLimiter = RateLimit({
-    windowMs: 60 * 60 * 1000, // 1 hour window 
-    delayAfter: 10, // begin slowing down responses after the 10 request 
-    delayMs: 3 * 1000, // slow down subsequent responses by 3 seconds per request 
+    windowMs: 30 * 60 * 1000, // 30 min window 
+    delayMs: 0, // disable slowdown
     max: 30, // start blocking after 30 requests 
-    message: "Too many login attempts, please try again after an hour"
+    message: "Too many login attempts, please try again in 30 mins"
 });
 
 // Login
